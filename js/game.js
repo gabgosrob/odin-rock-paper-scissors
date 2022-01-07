@@ -9,7 +9,7 @@ const roundResultField = document.querySelector("#round");
 const gameResultField = document.querySelector("#game");
 
 const CHOICES = ["rock", "paper", "scissors"];
-const SCORE_TO_WIN = 3;
+const SCORE_TO_WIN = 5;
 let playerScore = 0;
 let computerScore = 0;
 let gameOver = false;
