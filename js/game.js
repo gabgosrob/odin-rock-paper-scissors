@@ -2,7 +2,12 @@
 
 const CHOICES = ["rock", "paper", "scissors"];
 const buttons = Array.from(document.querySelectorAll("button"));
-const resultField = document.querySelector(".result")
+const playerScoreField = document.getElementById("player");
+const computerScoreField = document.getElementById("computer");
+const resultField = document.getElementById("result");
+let playerScore = 0;
+let computerScore = 0;
+let numberOfGames = 5;
 
 buttons.forEach(button => {
     button.addEventListener("click", play)
@@ -10,15 +15,24 @@ buttons.forEach(button => {
 
 function play(e) {
     const playerSelection = e.target.id;
+    if (playerScore < 3 && computerScore < 3) {
+        playRound(playerSelection)
+    }
+}
+
+function playRound(playerSelection) {
     const computerSelection = computerPlay();
-    const result = playRound(playerSelection, computerSelection);
+    const result = getRoundResult(playerSelection, computerSelection);
     const resultMessage = createResultMessage(
         result,
         playerSelection,
         computerSelection
     );
+    updateScores(result);
 
-    resultField.innerText = resultMessage;
+    resultField.textContent = resultMessage;
+    playerScoreField.textContent = playerScore;
+    computerScoreField.textContent = computerScore;
 }
 
 function computerPlay() {
@@ -27,7 +41,7 @@ function computerPlay() {
     return CHOICES[randomSelection];
 }
 
-function playRound(playerSelection, computerSelection) {
+function getRoundResult(playerSelection, computerSelection) {
     if (playerSelection == computerSelection) {
         return "draw";
     }
@@ -85,6 +99,15 @@ function createResultMessage(result, playerSelection, computerSelection) {
     }
 
     return message;
+}
+
+function updateScores(result) {
+    if (result == "win") {
+        playerScore++;
+    }
+    else if (result == "loss") {
+        computerScore++;
+    }
 }
 
 function capitalize(text) {
