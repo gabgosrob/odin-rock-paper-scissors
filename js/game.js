@@ -1,23 +1,40 @@
 "use strict";
 
+const choiceButtons = Array.from(document.querySelectorAll("button:not(#reset)"));
+const resetButton = document.querySelector("#reset")
+const body = document.querySelector("body");
+const playerScoreField = document.querySelector("#player");
+const computerScoreField = document.querySelector("#computer");
+const roundResultField = document.querySelector("#round");
+const gameResultField = document.querySelector("#game");
+
 const CHOICES = ["rock", "paper", "scissors"];
-const buttons = Array.from(document.querySelectorAll("button"));
-const playerScoreField = document.getElementById("player");
-const computerScoreField = document.getElementById("computer");
-const resultField = document.getElementById("result");
+const SCORE_TO_WIN = 3;
 let playerScore = 0;
 let computerScore = 0;
-let numberOfGames = 5;
+let gameOver = false;
 
-buttons.forEach(button => {
-    button.addEventListener("click", play)
+choiceButtons.forEach(button => {
+    button.addEventListener("click", play);
 });
+resetButton.addEventListener("click", reset);
 
 function play(e) {
     const playerSelection = e.target.id;
-    if (playerScore < 3 && computerScore < 3) {
+    if (!gameOver) {
         playRound(playerSelection)
     }
+}
+
+function reset(e) {
+    gameOver = false;
+    playerScore = 0;
+    computerScore = 0;
+    
+    playerScoreField.textContent = playerScore;
+    computerScoreField.textContent = computerScore;
+    roundResultField.textContent = "No result to show.";
+    gameResultField.textContent = "Game in progress.";
 }
 
 function playRound(playerSelection) {
@@ -28,11 +45,15 @@ function playRound(playerSelection) {
         playerSelection,
         computerSelection
     );
-    updateScores(result);
 
-    resultField.textContent = resultMessage;
-    playerScoreField.textContent = playerScore;
-    computerScoreField.textContent = computerScore;
+    updateScores(result);
+    updateRoundResult(resultMessage)
+
+    if (playerScore == SCORE_TO_WIN || computerScore == SCORE_TO_WIN) {
+        gameOver = true;
+        updateGameResult(result);
+    }
+
 }
 
 function computerPlay() {
@@ -108,6 +129,28 @@ function updateScores(result) {
     else if (result == "loss") {
         computerScore++;
     }
+
+    updateScoreFields();
+}
+
+function updateScoreFields() {
+    playerScoreField.textContent = playerScore;
+    computerScoreField.textContent = computerScore;
+}
+
+function updateRoundResult(resultMessage) {
+    roundResultField.textContent = resultMessage;
+}
+
+function updateGameResult(result) {
+    let winnerText;
+    if (result == "win"){
+        winnerText = "You won! Congratulations!"
+    }
+    else {
+        winnerText = "You lost! Better luck next time!"
+    }
+    gameResultField.textContent = winnerText;
 }
 
 function capitalize(text) {
