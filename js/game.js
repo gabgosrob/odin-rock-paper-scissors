@@ -1,26 +1,30 @@
 "use strict";
 
-function game() {
-    console.log("Let's play 5 rounds!")
-    for (let i = 0; i < 5; i++) {
-        let computerSelection = computerPlay();
-        let playerSelection;
-        while (!["Rock", "Paper", "Scissors"].includes(playerSelection)) {
-            playerSelection = capitalize(prompt("Enter your choice: "));
-        }
+const CHOICES = ["rock", "paper", "scissors"];
+const buttons = Array.from(document.querySelectorAll("button"));
+const resultField = document.querySelector(".result")
 
-        let result = playRound(playerSelection, computerSelection);
-        let resultMessage = createResultMessage(result, playerSelection, computerSelection);
+buttons.forEach(button => {
+    button.addEventListener("click", play)
+});
 
-        console.log(resultMessage);
-    }
+function play(e) {
+    const playerSelection = e.target.id;
+    const computerSelection = computerPlay();
+    const result = playRound(playerSelection, computerSelection);
+    const resultMessage = createResultMessage(
+        result,
+        playerSelection,
+        computerSelection
+    );
+
+    resultField.innerText = resultMessage;
 }
 
 function computerPlay() {
-    const choices = ["Rock", "Paper", "Scissors"];
     const randomSelection = Math.floor(Math.random() * 3);
 
-    return choices[randomSelection];
+    return CHOICES[randomSelection];
 }
 
 function playRound(playerSelection, computerSelection) {
@@ -30,32 +34,32 @@ function playRound(playerSelection, computerSelection) {
 
     let result;
     switch (playerSelection) {
-        case "Rock":
+        case "rock":
             switch (computerSelection) {
-                case "Paper":
+                case "paper":
                     result = "loss";
                     break;
-                case "Scissors":
+                case "scissors":
                     result = "win";
                     break;
             }
             break;
-        case "Paper":
+        case "paper":
             switch (computerSelection) {
-                case "Rock":
+                case "rock":
                     result = "win";
                     break;
-                case "Scissors":
+                case "scissors":
                     result = "loss";
                     break;
             }
             break;
-        case "Scissors":
+        case "scissors":
             switch (computerSelection) {
-                case "Rock":
+                case "rock":
                     result = "loss";
                     break;
-                case "Paper":
+                case "paper":
                     result = "win";
                     break;
             }
@@ -70,13 +74,13 @@ function createResultMessage(result, playerSelection, computerSelection) {
 
     switch (result) {
         case "win":
-            message = `You win! ${playerSelection} beats ${computerSelection}!`;
+            message = `You win! ${capitalize(playerSelection)} beats ${computerSelection}!`;
             break;
         case "loss":
-            message = `You lose! ${computerSelection} beats ${playerSelection}!`;
+            message = `You lose! ${capitalize(computerSelection)} beats ${playerSelection}!`;
             break;
         case "draw":
-            message = `Draw!`;
+            message = `You both chose ${playerSelection}, it's a draw!`;
             break;
     }
 
@@ -85,7 +89,7 @@ function createResultMessage(result, playerSelection, computerSelection) {
 
 function capitalize(text) {
     text = text.toLowerCase();
-    let firstLetter = text.charAt(0);
+    const firstLetter = text.charAt(0);
 
     return text.replace(firstLetter, firstLetter.toUpperCase());
 }
