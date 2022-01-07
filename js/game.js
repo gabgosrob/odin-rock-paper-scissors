@@ -40,14 +40,9 @@ function reset(e) {
 function playRound(playerSelection) {
     const computerSelection = computerPlay();
     const result = getRoundResult(playerSelection, computerSelection);
-    const resultMessage = createResultMessage(
-        result,
-        playerSelection,
-        computerSelection
-    );
 
     updateScores(result);
-    updateRoundResult(resultMessage)
+    updateRoundResult(result, playerSelection, computerSelection);
 
     if (playerScore == SCORE_TO_WIN || computerScore == SCORE_TO_WIN) {
         gameOver = true;
@@ -104,7 +99,33 @@ function getRoundResult(playerSelection, computerSelection) {
     return result;
 }
 
-function createResultMessage(result, playerSelection, computerSelection) {
+function updateScores(result) {
+    if (result == "win") {
+        playerScore++;
+    }
+    else if (result == "loss") {
+        computerScore++;
+    }
+
+    updateScoreFields();
+}
+
+function updateScoreFields() {
+    playerScoreField.textContent = playerScore;
+    computerScoreField.textContent = computerScore;
+}
+
+function updateRoundResult(result, playerSelection, computerSelection) {
+    const resultMessage = createRoundResultMessage(
+        result,
+        playerSelection,
+        computerSelection
+    );
+
+    roundResultField.textContent = resultMessage;
+}
+
+function createRoundResultMessage(result, playerSelection, computerSelection) {
     let message;
 
     switch (result) {
@@ -122,27 +143,12 @@ function createResultMessage(result, playerSelection, computerSelection) {
     return message;
 }
 
-function updateScores(result) {
-    if (result == "win") {
-        playerScore++;
-    }
-    else if (result == "loss") {
-        computerScore++;
-    }
-
-    updateScoreFields();
-}
-
-function updateScoreFields() {
-    playerScoreField.textContent = playerScore;
-    computerScoreField.textContent = computerScore;
-}
-
-function updateRoundResult(resultMessage) {
-    roundResultField.textContent = resultMessage;
-}
-
 function updateGameResult(result) {
+    const winnerText = createGameResultMessage(result);
+    gameResultField.textContent = winnerText;
+}
+
+function createGameResultMessage(result) {
     let winnerText;
     if (result == "win"){
         winnerText = "You won! Congratulations!"
@@ -150,7 +156,8 @@ function updateGameResult(result) {
     else {
         winnerText = "You lost! Better luck next time!"
     }
-    gameResultField.textContent = winnerText;
+
+    return winnerText;
 }
 
 function capitalize(text) {
